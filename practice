@@ -1,0 +1,27 @@
+from bs4 import BeautifulSoup
+import urllib.request
+import requests
+import os
+
+x=0
+def getDbImage(url_image):
+    if not os.path.exists('d://images'):  # 检查文件夹是否存在
+        os.mkdir('d://images')  # 创建文件夹（文件夹已存在则无法创建）
+
+    response = requests.get(url_image)
+
+    html = response.text  # 获得源代码
+
+    soup = BeautifulSoup(html, 'html.parser')  # 创建对象  解析页面 html lxml
+
+    my_girl = soup.find_all('img')  # 找到img标签 以列表形式存储 my_girl是返回的对象
+    global x
+
+    for i in my_girl:
+        if i.get('id')=='bigImg':
+            link = i.get('src')
+            urllib.request.urlretrieve(link, 'd://images/%s.jpg' % x)
+            x+=1
+for i in range(0,12):
+    url='http://desk.zol.com.cn/bizhi/5784_'+str(i+71882)+'_2.html'
+    getDbImage(url)
